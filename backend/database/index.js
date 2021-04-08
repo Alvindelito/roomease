@@ -1,9 +1,8 @@
-const CONNECTION = require('../config.env.js');
-const mongoose = require ('mongoose');
-// for local db connection
-// mongoose.connect('mongodb://localhost:27017/roomease', {useNewUrlParser: true, useUnifiedTopology: true});
+require('dotenv').config()
+const mongoose = require('mongoose');
+const CONNECTION = process.env.MONGODB_CONNECTION || mongoose.connect('mongodb://localhost:27017/roomease', {useNewUrlParser: true, useUnifiedTopology: true});
 
-// cloud connection
+// cloud connection or local
 mongoose.connect(CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true});
 
 const db = mongoose.connection;
@@ -52,7 +51,7 @@ const householdSchema = new mongoose.Schema({
   chores: [choreSchema],
   expenses: [expenseSchema],
   groceries: [grocerySchema],
-  users: [],
+  users: [userSchema],
 });
 
 const User = mongoose.model('User', userSchema);
