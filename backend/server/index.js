@@ -2,14 +2,34 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
+const passport = require('passport');
+const passportLocal = require('passport-local').Strategy;
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcryptjs');
+const session = require('express-session');
 const db = require('../database/index');
-
 const app = express();
 
-app.use(cors());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
 app.use(morgan('dev'));
+app.use(session({
+  secret: 'secretcode',
+  resave: true,
+  saveUninitialized: true,
+}));
+app.use(cookieParser('secretcode'));
+app.use(passport.initialize());
+app.use(passport.session());
+require('./passportConfig')(passport);
+
 
 // GET
 app.get('/signin/:id', (req, res) => {
