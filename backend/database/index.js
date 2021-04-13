@@ -1,6 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose');
-const CONNECTION = process.env.MONGODB_CONNECTION || mongoose.connect('mongodb://localhost:27017/roomease', {useNewUrlParser: true, useUnifiedTopology: true});
+const CONNECTION = process.env.MONGO_CONNECTION || mongoose.connect('mongodb://localhost:27017/roomease', {useNewUrlParser: true, useUnifiedTopology: true});
 
 // cloud connection or local
 mongoose.connect(CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true});
@@ -12,13 +12,14 @@ db.once('open', function() {
 });
 
 const userSchema = new mongoose.Schema({
+  email: String,
+  password: String,
   firstName: String,
   lastName: String,
   // birthday: Date,
   pictureURL: String,
   householdID: String,
   isHouseholdOwner: Boolean,
-  firebaseAuthID: String,
 });
 
 // subdocument

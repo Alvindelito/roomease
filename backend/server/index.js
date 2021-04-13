@@ -1,42 +1,33 @@
+require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
-const passport = require('passport');
-const passportLocal = require('passport-local').Strategy;
-const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
-const session = require('express-session');
+const jwt = require('jsonwebtoken');
 const db = require('../database/index');
 const app = express();
+const authenticateToken = require('./middleware/authenticateToken');
 
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  })
+  cors(
+  //   {
+  //   origin: 'http://localhost:3000',
+  //   credentials: true,
+  // }
+  )
 );
 app.use(morgan('dev'));
-app.use(session({
-  secret: 'secretcode',
-  resave: true,
-  saveUninitialized: true,
-}));
-app.use(cookieParser('secretcode'));
-app.use(passport.initialize());
-app.use(passport.session());
-require('./passportConfig')(passport);
-
 
 // GET
-app.get('/signin/:id', (req, res) => {
-  db.User.findOne({ firebaseAuthID: req.params.id }, (err, result) => {
-    if (err) res.status(400).send(err);
-    else res.status(200).json(result);
-  })
+app.get('/me', authenticateToken, async (req, res) => {
+  console.log('req.user:', req.user);
+  const user = await db.User.findOne({ _id: req.user.id });
+  if (user) res.status(200).json(user);
+  else res.sendStatus(401);
 });
 
 app.get('/api/household/:id', (req, res) => {
@@ -46,24 +37,32 @@ app.get('/api/household/:id', (req, res) => {
   })
 });
 
-// POST
-app.post('/signup', (req, res) => {
-  // TO BE REPLACED FOR ACTUAL FIREBASE AUTH
-  const {firstName, lastName , pictureURL, firebaseAuthID} = req.body;
-  const newUser = new db.User({
-    firstName: firstName,
-    lastName: lastName,
-    // birthday: birthday,
-    pictureURL: pictureURL,
-    householdID: '',
-    isHouseholdOwner: false,
-    firebaseAuthID: firebaseAuthID,
-  });
+app.post('/register', async (req, res) => {
+  const {email, plainPassword, firstName, lastName} = req.body;
 
-  newUser.save((err, result) => {
-    if (err) res.status(400).send(err);
-    else res.status(200).json(result);
-  })
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(plainPassword, salt);
+    const newUser = await new db.User({
+      email: email,
+      password: hashedPassword,
+      firstName: firstName,
+      lastName: lastName,
+      // birthday: birthday,
+      // pictureURL: pictureURL,
+      householdID: '',
+      isHouseholdOwner: false,
+    });
+
+    newUser.save((err, result) => {
+      if (err) res.status(400).send(err);
+      else res.status(200).json(result);
+    })
+  } catch (err) {
+    res.status(400).send(err);
+  }
+
+
 });
 
 // User creates household
