@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
 const db = require('../database/index');
 const app = express();
 const authenticateToken = require('./middleware/authenticateToken');
@@ -23,18 +24,21 @@ app.use(
 app.use(morgan('dev'));
 
 // GET
-app.get('/me', authenticateToken, async (req, res) => {
+app.get('/api/me', authenticateToken, async (req, res) => {
   console.log('req.user:', req.user);
-  const user = await db.User.findOne({ _id: req.user.id });
+  const user = await db.User.findById(req.user.id);
   if (user) res.status(200).json(user);
   else res.sendStatus(401);
 });
 
-app.get('/api/household/:id', (req, res) => {
-  db.Household.findOne({ _id: req.params.id }, (err, result) => {
-    if (err) res.status(400).send(err);
-    else res.status(200).json(result);
-  })
+app.get('/api/household/:id', authenticateToken, async (req, res) => {
+  try {
+    const household = await db.Household.findById(req.params.id).populate('householdOwner').populate('users').exec();
+    // console.log(await household.populate('householdOwner'))
+    res.status(200).json(household);
+  } catch (err) {
+    res.status(400).send(err);
+  }
 });
 
 app.post('/register', async (req, res) => {
@@ -66,15 +70,17 @@ app.post('/register', async (req, res) => {
 });
 
 // User creates household
-app.post('/api/household', (req, res) => {
-  const { name, householdOwner, firstName, userID } = req.body;
+app.post('/api/household', authenticateToken, async (req, res) => {
+  const { householdName } = req.body;
+  const userId = req.user.id
+  const user = await db.User.findOne({ _id: userId }).exec();
   const newHousehold = new db.Household({
-    name: name,
-    householdOwner: householdOwner,
+    householdName: householdName,
+    householdOwner: user,
     chores: [],
     expenses: [],
     groceries: [],
-    users: [householdOwner],
+    users: [user],
   });
 
   // creates new household and updates user as owner of household.
@@ -82,7 +88,7 @@ app.post('/api/household', (req, res) => {
     if (err) res.status(400).send(err);
     else {
       db.User.updateOne(
-        { _id: userID },
+        { _id: userId },
         { householdID: result._id,
           isHouseholdOwner: true },
         (err, result) => {

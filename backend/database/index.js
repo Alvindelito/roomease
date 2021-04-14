@@ -47,12 +47,12 @@ const grocerySchema = new mongoose.Schema({
 })
 
 const householdSchema = new mongoose.Schema({
-  name: String,
-  householdOwner: String, // reference the user
+  householdName: String,
+  householdOwner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // reference the user
   chores: [choreSchema],
   expenses: [expenseSchema],
   groceries: [grocerySchema],
-  users: [userSchema],
+  users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
 const User = mongoose.model('User', userSchema);
