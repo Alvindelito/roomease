@@ -53,6 +53,7 @@ const householdSchema = new mongoose.Schema({
   expenses: [expenseSchema],
   groceries: [grocerySchema],
   users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  inviteCode: String,
 });
 
 const User = mongoose.model('User', userSchema);

@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
 
 const db = require('../database/index');
 const app = express();
@@ -81,6 +82,7 @@ app.post('/api/household', authenticateToken, async (req, res) => {
     expenses: [],
     groceries: [],
     users: [user],
+    inviteCode: uuidv4()
   });
 
   // creates new household and updates user as owner of household.
@@ -100,7 +102,7 @@ app.post('/api/household', authenticateToken, async (req, res) => {
   })
 });
 
-app.post('/api/chore', (req, res) => {
+app.post('/api/chore', authenticateToken, (req, res) => {
   const {name, date, choreHolder, householdID} = req.body;
   const newChore = new db.Chore({
     name: name,
@@ -114,12 +116,12 @@ app.post('/api/chore', (req, res) => {
     { $push: { chores: newChore } },
     (err, result) => {
       if (err) res.status(400).send(err);
-      else res.status(200).json(result);
+      else res.status(200).json(newChore);
     }
   )
 });
 
-app.post('/api/expense', (req, res) => {
+app.post('/api/expense', authenticateToken, (req, res) => {
   const {name, amount, expenseType, expenseHolder, householdID} = req.body;
   const newExpense = new db.Expense({
     name: name,
@@ -139,7 +141,7 @@ app.post('/api/expense', (req, res) => {
 });
 
 // POST grocery item
-app.post('/api/grocery', (req, res) => {
+app.post('/api/grocery', authenticateToken, (req, res) => {
   const {name, quantity, quantityType, householdID} = req.body;
 
   const newGrocery = new db.Grocery({
@@ -160,7 +162,7 @@ app.post('/api/grocery', (req, res) => {
 });
 
 // DELETE grocery item
-app.delete('/api/grocery/:id', (req, res) => {
+app.delete('/api/grocery/:id', authenticateToken, (req, res) => {
   const itemID = req.params.id;
   db.Household.updateOne({},
     { $pull: { groceries: { _id: itemID } } },
@@ -175,9 +177,10 @@ app.delete('/api/grocery/:id', (req, res) => {
 })
 
 // PUT mark grocery item as bought
-app.put('/api/grocery/:id', (req, res) => {
+app.put('/api/grocery/:id', authenticateToken, (req, res) => {
   const itemID = req.params.id;
-  const trueOrFalse = req.body.trueOrFalse
+  const trueOrFalse = !req.body.trueOrFalse
+
   db.Household.updateOne(
     { "groceries._id": itemID },
     {
@@ -196,29 +199,31 @@ app.put('/api/grocery/:id', (req, res) => {
 
 // PUT
 // add user to household
-app.put('/api/user/:id', (req, res) => {
-  const { householdID, firstName } = req.body;
-  db.User.updateOne(
-    { _id: req.params.id },
-    { householdID: householdID },
-    (err, result) => {
-      if (err) res.status(400).send(err);
-      else {
-        db.Household.updateOne(
-          { _id: householdID },
-          { $push: { users: firstName } },
-          (err, result) => {
-            if (err) res.status(400).send(err);
-            else res.status(200).json(result);
-          }
-        )
-      }
-    }
-  )
+app.put('/api/user/:id', authenticateToken, async (req, res) => {
+  const { inviteCode } = req.body;
+
+  try {
+    const household = await db.Household.findOne({ inviteCode: inviteCode });
+    await db.User.updateOne(
+      { _id: req.params.id },
+      { householdID: household._id}
+    );
+
+    const user = await db.User.findById(req.params.id);
+
+    await db.Household.updateOne(
+      { _id: household._id},
+      { $push: { users: user } }
+    )
+    res.status(200).send('successfully added user to household');
+
+  } catch (err) {
+    res.status(400).send(err);
+  }
 })
 
 // toggle chore completion
-app.put('/api/chore/:choreId', (req, res) => {
+app.put('/api/chore/:choreId', authenticateToken, (req, res) => {
   const {choreId} = req.params;
   const {chore, householdID } = req.body;
 
@@ -239,7 +244,7 @@ app.put('/api/chore/:choreId', (req, res) => {
 })
 
 // delete chore
-app.delete('/api/chore/:choreId', (req, res) => {
+app.delete('/api/chore/:choreId', authenticateToken, (req, res) => {
   const {choreId} = req.params;
   const {householdID} = req.body;
 
@@ -255,7 +260,7 @@ app.delete('/api/chore/:choreId', (req, res) => {
     },
     (err, result) => {
       if (err) res.status(400).send(err);
-      else res.status(200).json(result);
+      else res.status(200).send('Successfully Deleted Chore');
     }
   )
 })
