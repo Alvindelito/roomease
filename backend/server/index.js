@@ -99,23 +99,27 @@ app.post('/api/household', authenticateToken, async (req, res) => {
   }
 });
 
-app.post('/api/chore', authenticateToken, (req, res) => {
+app.post('/api/chore', authenticateToken, async (req, res) => {
   const {name, date, choreHolder, householdID} = req.body;
-  const newChore = new db.Chore({
-    name: name,
-    date: date,
-    choreHolder: choreHolder,
-    isComplete: false,
-  })
+  try {
+    const newChore = new db.Chore({
+      name: name,
+      date: date,
+      choreHolder: choreHolder,
+      isComplete: false,
+    })
 
-  db.Household.updateOne(
-    { _id: householdID },
-    { $push: { chores: newChore } },
-    (err, result) => {
-      if (err) res.status(400).send(err);
-      else res.status(200).json(newChore);
-    }
-  )
+    const updateChore = await db.Household.findByIdAndUpdate(
+      householdID,
+      { $push: { chores: newChore } },
+      { new: true}
+    );
+
+    if (updateChore) res.status(200).json(updateChore);
+
+  } catch (err) {
+    res.status(400).send({ error: `${err}` });
+  }
 });
 
 app.post('/api/expense', authenticateToken, (req, res) => {
