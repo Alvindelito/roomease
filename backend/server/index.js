@@ -199,7 +199,7 @@ app.put('/api/grocery/:id', authenticateToken, (req, res) => {
 
 // PUT
 // add user to household
-app.put('/api/user/:id', authenticateToken, async (req, res) => {
+app.put('/api/addUser/:id', authenticateToken, async (req, res) => {
   const { inviteCode } = req.body;
 
   try {
@@ -211,14 +211,61 @@ app.put('/api/user/:id', authenticateToken, async (req, res) => {
 
     const user = await db.User.findById(req.params.id);
 
-    await db.Household.updateOne(
-      { _id: household._id},
-      { $push: { users: user } }
-    )
+
+    await household.users.push(user);
+    await household.save();
     res.status(200).send('successfully added user to household');
 
   } catch (err) {
+    console.log(err);
     res.status(400).send(err);
+  }
+})
+
+// remove user from household
+app.put('/api/removeUser/:id', authenticateToken, async (req, res) => {
+  const userToBeRemovedId = req.params.id;
+  const { householdID } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const household = await db.Household.findById(householdID).populate('users').populate('householdOwner');
+
+    // check if user id matches userToBeRemovedId or if user is owner of household
+    if (userId === userToBeRemovedId || userId === household.householdOwner._id.toString()) {
+
+      // household owner cannot be removed from household unless they transfer ownership.
+      if (userToBeRemovedId === household.householdOwner._id.toString()) {
+        throw new Error('Household owner cannot be removed from household unless they transfer ownership.')
+        res.status(400)
+      }
+      console.log('IF THIS EXISTS, THEN I KNOW WHY');
+      // check that the user exists in household
+      let findUser = household.users.filter(user => user._id.toString() === userToBeRemovedId)
+
+      if (findUser.length === 1) {
+        // perform update to remove user from household
+        await household.users.pull(userToBeRemovedId);
+        await household.save();
+
+        // update user to be removed to no longer be in the household
+        await db.User.findByIdAndUpdate(
+          userToBeRemovedId,
+          { householdID: '' }
+        );
+
+        res.status(200).send('User successfully removed from household');
+      } else {
+        throw new Error('User does not exist in this household')
+      }
+
+    } else {
+      // if not, reject
+      res.sendStatus(403);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({ error: `${err}` });
   }
 })
 

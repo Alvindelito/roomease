@@ -1,9 +1,9 @@
 require('dotenv').config()
 const mongoose = require('mongoose');
-const CONNECTION = process.env.MONGO_CONNECTION || mongoose.connect('mongodb://localhost:27017/roomease', {useNewUrlParser: true, useUnifiedTopology: true});
+const CONNECTION = process.env.MONGO_CONNECTION || mongoose.connect('mongodb://localhost:27017/roomease', {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 
 // cloud connection or local
-mongoose.connect(CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
