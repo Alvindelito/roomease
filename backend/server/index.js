@@ -109,72 +109,84 @@ app.post('/api/chore', authenticateToken, async (req, res) => {
       isComplete: false,
     })
 
-    const updateChore = await db.Household.findByIdAndUpdate(
+    const addChore = await db.Household.findByIdAndUpdate(
       householdID,
       { $push: { chores: newChore } },
       { new: true}
     );
 
-    if (updateChore) res.status(200).json(updateChore);
+    if (addChore) res.status(200).json(addChore);
 
   } catch (err) {
     res.status(400).send({ error: `${err}` });
   }
 });
 
-app.post('/api/expense', authenticateToken, (req, res) => {
+app.post('/api/expense', authenticateToken, async (req, res) => {
   const {name, amount, expenseType, expenseHolder, householdID} = req.body;
-  const newExpense = new db.Expense({
-    name: name,
-    amount: amount,
-    expenseType: expenseType,
-    expenseHolder: expenseHolder
-  })
+  try {
+    const newExpense = new db.Expense({
+      name: name,
+      amount: amount,
+      expenseType: expenseType,
+      expenseHolder: expenseHolder
+    })
 
-  db.Household.updateOne(
-    { _id: householdID },
-    { $push:  { expenses: newExpense } },
-    (err, result) => {
-      if (err) res.status(400).send(err);
-      else res.status(200).json(result);
-    }
-  )
+    const addExpense = await db.Household.findByIdAndUpdate(
+      householdID,
+      { $push:  { expenses: newExpense } },
+      {new: true},
+    );
+
+    if (addExpense) res.status(200).json(addExpense)
+
+  } catch (err) {
+    res.status(400).send({ error: `${err}` });
+  }
 });
 
 // POST grocery item
-app.post('/api/grocery', authenticateToken, (req, res) => {
+app.post('/api/grocery', authenticateToken, async (req, res) => {
   const {name, quantity, quantityType, householdID} = req.body;
 
-  const newGrocery = new db.Grocery({
-    name: name,
-    quantity: quantity,
-    quantityType: quantityType,
-    isPurchased: false,
-  });
+  try {
+    const newGrocery = new db.Grocery({
+      name: name,
+      quantity: quantity,
+      quantityType: quantityType,
+      isPurchased: false,
+    });
 
-  db.Household.updateOne(
-    { _id: householdID },
-    { $push: { groceries: newGrocery } },
-    (err, result) => {
-      if (err) res.status(400).send(err);
-      else res.status(200).json(result);
-    }
-  );
+    const addGrocery = await db.Household.findByIdAndUpdate(
+      householdID,
+      { $push: { groceries: newGrocery } },
+      {new: true},
+    );
+
+    if (addGrocery) res.status(200).json(addGrocery);
+
+  } catch (err) {
+    res.status(400).send({ error: `${err}` });
+  }
 });
 
 // DELETE grocery item
-app.delete('/api/grocery/:id', authenticateToken, (req, res) => {
+app.delete('/api/grocery/:id', authenticateToken, async (req, res) => {
+  const { householdID } = req.body;
   const itemID = req.params.id;
-  db.Household.updateOne({},
-    { $pull: { groceries: { _id: itemID } } },
-    { multi: true },
-    (err, result) => {
-      if (err) res.status(400).send(err);
-      else {
-        res.status(200).json(result);
-      }
-    }
-  )
+
+  try {
+    const deleteHousehold = await db.Household.findByIdAndUpdate(
+      householdID,
+      { $pull: { groceries: { _id: itemID } } },
+      { multi: true, new: true },
+    );
+
+    if (deleteHousehold) res.status(200).json(deleteHousehold);
+
+  } catch (err) {
+    res.status(400).send({ error: `${err}` });
+  }
 })
 
 // PUT mark grocery item as bought
