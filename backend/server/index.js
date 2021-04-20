@@ -26,7 +26,6 @@ app.use(morgan('dev'));
 
 // GET
 app.get('/api/me', authenticateToken, async (req, res) => {
-  console.log('req.user:', req.user);
   const user = await db.User.findById(req.user.id);
   if (user) res.status(200).json(user);
   else res.sendStatus(401);
@@ -35,10 +34,9 @@ app.get('/api/me', authenticateToken, async (req, res) => {
 app.get('/api/household/:id', authenticateToken, async (req, res) => {
   try {
     const household = await db.Household.findById(req.params.id).populate('householdOwner').populate('users').exec();
-    // console.log(await household.populate('householdOwner'))
     res.status(200).json(household);
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send({ error: `${err}` });
   }
 });
 
@@ -64,7 +62,7 @@ app.post('/register', async (req, res) => {
       else res.status(200).json(result);
     })
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send({ error: `${err}` });
   }
 
 
@@ -74,32 +72,31 @@ app.post('/register', async (req, res) => {
 app.post('/api/household', authenticateToken, async (req, res) => {
   const { householdName } = req.body;
   const userId = req.user.id
-  const user = await db.User.findOne({ _id: userId }).exec();
-  const newHousehold = new db.Household({
-    householdName: householdName,
-    householdOwner: user,
-    chores: [],
-    expenses: [],
-    groceries: [],
-    users: [user],
-    inviteCode: uuidv4()
-  });
+  try {
+    const user = await db.User.findById(userId).exec();
+    const newHousehold = new db.Household({
+      householdName: householdName,
+      householdOwner: user,
+      chores: [],
+      expenses: [],
+      groceries: [],
+      users: [user],
+      inviteCode: uuidv4()
+    });
 
-  // creates new household and updates user as owner of household.
-  newHousehold.save((err, result) => {
-    if (err) res.status(400).send(err);
-    else {
-      db.User.updateOne(
-        { _id: userId },
-        { householdID: result._id,
-          isHouseholdOwner: true },
-        (err, result) => {
-          if (err) res.status(400).send(err);
-          res.status(200).json(result);
-        }
-      )
+    // creates new household and updates user as owner of household.
+    const saveHousehold = await newHousehold.save();
+    if (saveHousehold) {
+      user.householdID = newHousehold._id;
+      user.isHouseholdOwner = true;
+      const updateUser = await user.save();
+      if (updateUser) res.status(200).json(saveHousehold);
+    } else {
+      throw new Error('Could not save household');
     }
-  })
+  } catch (err) {
+    res.status(400).send({ error: `${err}` });
+  }
 });
 
 app.post('/api/chore', authenticateToken, (req, res) => {
@@ -188,6 +185,7 @@ app.put('/api/grocery/:id', authenticateToken, (req, res) => {
         "groceries.$.isPurchased": trueOrFalse
       }
     },
+    {new: true},
     (err, result) => {
       if (err) res.status(400).send(err);
       else {
@@ -239,7 +237,6 @@ app.put('/api/removeUser/:id', authenticateToken, async (req, res) => {
         throw new Error('Household owner cannot be removed from household unless they transfer ownership.')
         res.status(400)
       }
-      console.log('IF THIS EXISTS, THEN I KNOW WHY');
       // check that the user exists in household
       let findUser = household.users.filter(user => user._id.toString() === userToBeRemovedId)
 
@@ -264,7 +261,6 @@ app.put('/api/removeUser/:id', authenticateToken, async (req, res) => {
       res.sendStatus(403);
     }
   } catch (err) {
-    console.log(err);
     res.status(400).send({ error: `${err}` });
   }
 })
@@ -283,6 +279,7 @@ app.put('/api/chore/:choreId', authenticateToken, (req, res) => {
         'chores.$': chore
       }
     },
+    {new: true},
     (err, result) => {
       if (err) res.status(400).send(err);
       else res.status(200).json(result);
