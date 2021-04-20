@@ -189,26 +189,29 @@ app.delete('/api/grocery/:id', authenticateToken, async (req, res) => {
   }
 })
 
-// PUT mark grocery item as bought
-app.put('/api/grocery/:id', authenticateToken, (req, res) => {
+// Toggle grocery item
+app.put('/api/grocery/:id', authenticateToken, async (req, res) => {
   const itemID = req.params.id;
   const trueOrFalse = !req.body.trueOrFalse
+  const { householdID } = req.body;
 
-  db.Household.updateOne(
-    { "groceries._id": itemID },
-    {
-      "$set": {
-        "groceries.$.isPurchased": trueOrFalse
-      }
-    },
-    {new: true},
-    (err, result) => {
-      if (err) res.status(400).send(err);
-      else {
-        res.status(200).json(result);
-      }
-    }
-  );
+
+  try {
+    const toggleGrocery = await db.Household.findOneAndUpdate(
+      {_id: householdID, "groceries._id": itemID},
+      {
+        "$set": {
+          "groceries.$.isPurchased": trueOrFalse
+        }
+      },
+      {new: true},
+    );
+
+    if (toggleGrocery) res.status(200).json(toggleGrocery);
+
+  } catch (err) {
+    res.status(400).send({ error: `${err}` });
+  }
 })
 
 // PUT
@@ -218,8 +221,8 @@ app.put('/api/addUser/:id', authenticateToken, async (req, res) => {
 
   try {
     const household = await db.Household.findOne({ inviteCode: inviteCode });
-    await db.User.updateOne(
-      { _id: req.params.id },
+    await db.User.findByIdAndUpdate(
+      req.params.id,
       { householdID: household._id}
     );
 
@@ -282,47 +285,50 @@ app.put('/api/removeUser/:id', authenticateToken, async (req, res) => {
 })
 
 // toggle chore completion
-app.put('/api/chore/:choreId', authenticateToken, (req, res) => {
+app.put('/api/chore/:choreId', authenticateToken, async (req, res) => {
   const {choreId} = req.params;
   const {chore, householdID } = req.body;
-
   chore.isComplete = !chore.isComplete;
 
-  db.Household.findOneAndUpdate(
-    {'_id': householdID, 'chores._id': choreId},
-    {
-      '$set': {
-        'chores.$': chore
-      }
-    },
-    {new: true},
-    (err, result) => {
-      if (err) res.status(400).send(err);
-      else res.status(200).json(result);
-    }
-  )
+  try {
+    const toggleChore = await db.Household.findOneAndUpdate(
+      {'_id': householdID, 'chores._id': choreId},
+      {
+        '$set': {
+          'chores.$': chore
+        }
+      },
+      {new: true},
+    );
+
+    if (toggleChore) res.status(200).json(toggleChore);
+
+  } catch (err) {
+    res.status(400).send({ error: `${err}` });
+  }
 })
 
 // delete chore
-app.delete('/api/chore/:choreId', authenticateToken, (req, res) => {
+app.delete('/api/chore/:choreId', authenticateToken, async (req, res) => {
   const {choreId} = req.params;
   const {householdID} = req.body;
 
-  console.log(`choreId: ${choreId}`);
-  console.log(`householdID: ${householdID}`);
 
-  db.Household.findOneAndUpdate(
-    {'_id': householdID, 'chores._id': choreId},
-    {
-      '$pull': {
-        chores: { _id: choreId }
+  try {
+    const deleteChore = await db.Household.findOneAndUpdate(
+      {'_id': householdID, 'chores._id': choreId},
+      {
+        '$pull': {
+          chores: { _id: choreId }
+        }
       }
-    },
-    (err, result) => {
-      if (err) res.status(400).send(err);
-      else res.status(200).send('Successfully Deleted Chore');
-    }
-  )
+    )
+
+    if (deleteChore) res.status(200).send('Successfully Deleted Chore');
+
+  } catch (err) {
+    res.status(400).send({ error: `${err}` });
+  }
 })
 
 const PORT = 3009;
