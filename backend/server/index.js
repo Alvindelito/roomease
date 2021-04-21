@@ -53,7 +53,7 @@ app.post('/register', async (req, res) => {
       lastName: lastName,
       // birthday: birthday,
       // pictureURL: pictureURL,
-      householdID: '',
+      householdId: '',
       isHouseholdOwner: false,
     });
 
@@ -87,7 +87,7 @@ app.post('/api/household', authenticateToken, async (req, res) => {
     // creates new household and updates user as owner of household.
     const saveHousehold = await newHousehold.save();
     if (saveHousehold) {
-      user.householdID = newHousehold._id;
+      user.householdId = newHousehold._id;
       user.isHouseholdOwner = true;
       const updateUser = await user.save();
       if (updateUser) res.status(200).json(saveHousehold);
@@ -100,7 +100,7 @@ app.post('/api/household', authenticateToken, async (req, res) => {
 });
 
 app.post('/api/chore', authenticateToken, async (req, res) => {
-  const {name, date, choreHolder, householdID} = req.body;
+  const {name, date, choreHolder, householdId} = req.body;
   try {
     const newChore = new db.Chore({
       name: name,
@@ -110,7 +110,7 @@ app.post('/api/chore', authenticateToken, async (req, res) => {
     })
 
     const addChore = await db.Household.findByIdAndUpdate(
-      householdID,
+      householdId,
       { $push: { chores: newChore } },
       { new: true}
     );
@@ -123,7 +123,7 @@ app.post('/api/chore', authenticateToken, async (req, res) => {
 });
 
 app.post('/api/expense', authenticateToken, async (req, res) => {
-  const {name, amount, expenseType, expenseHolder, householdID} = req.body;
+  const {name, amount, expenseType, expenseHolder, householdId} = req.body;
   try {
     const newExpense = new db.Expense({
       name: name,
@@ -133,7 +133,7 @@ app.post('/api/expense', authenticateToken, async (req, res) => {
     })
 
     const addExpense = await db.Household.findByIdAndUpdate(
-      householdID,
+      householdId,
       { $push:  { expenses: newExpense } },
       {new: true},
     );
@@ -147,7 +147,7 @@ app.post('/api/expense', authenticateToken, async (req, res) => {
 
 // POST grocery item
 app.post('/api/grocery', authenticateToken, async (req, res) => {
-  const {name, quantity, quantityType, householdID} = req.body;
+  const {name, quantity, quantityType, householdId} = req.body;
 
   try {
     const newGrocery = new db.Grocery({
@@ -158,7 +158,7 @@ app.post('/api/grocery', authenticateToken, async (req, res) => {
     });
 
     const addGrocery = await db.Household.findByIdAndUpdate(
-      householdID,
+      householdId,
       { $push: { groceries: newGrocery } },
       {new: true},
     );
@@ -172,12 +172,12 @@ app.post('/api/grocery', authenticateToken, async (req, res) => {
 
 // DELETE grocery item
 app.delete('/api/grocery/:id', authenticateToken, async (req, res) => {
-  const { householdID } = req.body;
+  const { householdId } = req.body;
   const itemID = req.params.id;
 
   try {
     const deleteHousehold = await db.Household.findByIdAndUpdate(
-      householdID,
+      householdId,
       { $pull: { groceries: { _id: itemID } } },
       { multi: true, new: true },
     );
@@ -193,12 +193,12 @@ app.delete('/api/grocery/:id', authenticateToken, async (req, res) => {
 app.put('/api/grocery/:id', authenticateToken, async (req, res) => {
   const itemID = req.params.id;
   const trueOrFalse = !req.body.trueOrFalse
-  const { householdID } = req.body;
+  const { householdId } = req.body;
 
 
   try {
     const toggleGrocery = await db.Household.findOneAndUpdate(
-      {_id: householdID, "groceries._id": itemID},
+      {_id: householdId, "groceries._id": itemID},
       {
         "$set": {
           "groceries.$.isPurchased": trueOrFalse
@@ -223,7 +223,7 @@ app.put('/api/addUser/:id', authenticateToken, async (req, res) => {
     const household = await db.Household.findOne({ inviteCode: inviteCode });
     await db.User.findByIdAndUpdate(
       req.params.id,
-      { householdID: household._id}
+      { householdId: household._id}
     );
 
     const user = await db.User.findById(req.params.id);
@@ -242,11 +242,11 @@ app.put('/api/addUser/:id', authenticateToken, async (req, res) => {
 // remove user from household
 app.put('/api/removeUser/:id', authenticateToken, async (req, res) => {
   const userToBeRemovedId = req.params.id;
-  const { householdID } = req.body;
+  const { householdId } = req.body;
   const userId = req.user.id;
 
   try {
-    const household = await db.Household.findById(householdID).populate('users').populate('householdOwner');
+    const household = await db.Household.findById(householdId).populate('users').populate('householdOwner');
 
     // check if user id matches userToBeRemovedId or if user is owner of household
     if (userId === userToBeRemovedId || userId === household.householdOwner._id.toString()) {
@@ -267,7 +267,7 @@ app.put('/api/removeUser/:id', authenticateToken, async (req, res) => {
         // update user to be removed to no longer be in the household
         await db.User.findByIdAndUpdate(
           userToBeRemovedId,
-          { householdID: '' }
+          { householdId: '' }
         );
 
         res.status(200).send('User successfully removed from household');
@@ -287,12 +287,12 @@ app.put('/api/removeUser/:id', authenticateToken, async (req, res) => {
 // toggle chore completion
 app.put('/api/chore/:choreId', authenticateToken, async (req, res) => {
   const {choreId} = req.params;
-  const {chore, householdID } = req.body;
+  const {chore, householdId } = req.body;
   chore.isComplete = !chore.isComplete;
 
   try {
     const toggleChore = await db.Household.findOneAndUpdate(
-      {'_id': householdID, 'chores._id': choreId},
+      {'_id': householdId, 'chores._id': choreId},
       {
         '$set': {
           'chores.$': chore
@@ -311,12 +311,12 @@ app.put('/api/chore/:choreId', authenticateToken, async (req, res) => {
 // delete chore
 app.delete('/api/chore/:choreId', authenticateToken, async (req, res) => {
   const {choreId} = req.params;
-  const {householdID} = req.body;
+  const {householdId} = req.body;
 
 
   try {
     const deleteChore = await db.Household.findOneAndUpdate(
-      {'_id': householdID, 'chores._id': choreId},
+      {'_id': householdId, 'chores._id': choreId},
       {
         '$pull': {
           chores: { _id: choreId }

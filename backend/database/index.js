@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
   lastName: String,
   // birthday: Date,
   pictureURL: String,
-  householdID: String,
+  householdId: String,
   isHouseholdOwner: Boolean,
 });
 
