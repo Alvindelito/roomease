@@ -3,11 +3,11 @@
     "body": "#FFFFFF",
     "text": "000000",
     "neutral": {
-      "grey-800": "#21262B",
-      "grey-400": "#7B8794",
-      "grey-200": "#CBD2D9",
-      "grey-100": "E3E7EB",
-      "grey-00": "#F5F7FA",
+      "grey800": "#21262B",
+      "grey400": "#7B8794",
+      "grey200": "#CBD2D9",
+      "grey100": "E3E7EB",
+      "grey00": "#F5F7FA",
       "white": "#FFFFFF"
     },
     "secondary": {
@@ -15,21 +15,19 @@
     },
     "primary": {
       "dark": "#3C556B",
-      "primary-600": "#3A80C9",
-      "primary-500": "#94B8DB",
-      "primary-200": "#A8C3E9",
-      "primary-100": "#D5E6FB"
+      "primary600": "#3A80C9",
+      "primary500": "#94B8DB",
+      "primary200": "#A8C3E9",
+      "primary100": "#D5E6FB"
     },
     "positive": {
-      "positive-600": "#1A6234"
+      "positive600": "#1A6234"
     },
     "negative": {
-      "negative-400": "#FF3C38"
+      "negative400": "#FF3C38"
     },
     "warning": {
-      "warning-400": "C97544"
+      "warning400": "#C97544"
     }
-
   }
-
 }

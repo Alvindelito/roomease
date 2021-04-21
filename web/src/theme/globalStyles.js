@@ -7,12 +7,12 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   a {
-    color: ${({ theme }) => theme.primary.primary - 600};
+    color: ${({ theme }) => theme.primary.primary600};
     cursor: pointer;
   }
 
   button.btn {
-    background-color: ${({ theme }) => theme.primary.primary - 600};
+    background-color: ${({ theme }) => theme.primary.primary600};
     color: ${({ theme }) => theme.text};
   }
 
@@ -20,7 +20,7 @@ export const GlobalStyles = createGlobalStyle`
     border: 0,
     display: inline-block;
     cursor: pointer;
-    background-color: ${({ theme }) => theme.primary.primary - 600};
+    background-color: ${({ theme }) => theme.primary.primary600};
     color: ${({ theme }) => theme.text};
     border-radius: 4px;
     font-size: 14px;
