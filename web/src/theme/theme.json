@@ -1,7 +1,7 @@
 {
   "light": {
     "body": "#FFFFFF",
-    "text": "000000",
+    "text": "#000000",
     "neutral": {
       "grey800": "#21262B",
       "grey400": "#7B8794",

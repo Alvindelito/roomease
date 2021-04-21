@@ -4,6 +4,14 @@ export const GlobalStyles = createGlobalStyle`
   body {
     background: ${({ theme }) => theme.body};
     color: ${({ theme }) => theme.text};
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+  }
+
+  h1, h2, h3, h4, h5 {
+    margin: 0
   }
 
   a {
@@ -13,7 +21,7 @@ export const GlobalStyles = createGlobalStyle`
 
   button.btn {
     background-color: ${({ theme }) => theme.primary.primary600};
-    color: ${({ theme }) => theme.text};
+    color: ${({ theme }) => theme.neutral.white};
   }
 
   button {
@@ -22,8 +30,9 @@ export const GlobalStyles = createGlobalStyle`
     cursor: pointer;
     background-color: ${({ theme }) => theme.primary.primary600};
     color: ${({ theme }) => theme.text};
-    border-radius: 4px;
+    border-radius: 50px;
     font-size: 14px;
     padding: 12px 24px;
+    border: none;
   }
 `;
