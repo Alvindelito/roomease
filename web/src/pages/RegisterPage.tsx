@@ -1,5 +1,12 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 const RegisterPage = () => {
-  return <h1>Register Page</h1>;
+  return (
+    <div>
+      <h1>Register Page</h1>
+      <FontAwesomeIcon icon={['fas', 'coffee']} />
+    </div>
+  );
 };
 
 export default RegisterPage;

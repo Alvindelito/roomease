@@ -8,6 +8,7 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     display: flex;
+    width: 100vw;
   }
 
   h1, h2, h3, h4, h5 {
