@@ -1,13 +1,13 @@
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
-  body {
+  html, body {
     background: ${({ theme }) => theme.body};
     color: ${({ theme }) => theme.text};
-    margin: 0;
+    font-family: 'Quicksand', 'Roboto', sans-serif;
+    margin: 0 8px;
     padding: 0;
     box-sizing: border-box;
-    display: flex;
   }
 
   h1, h2, h3, h4, h5 {
