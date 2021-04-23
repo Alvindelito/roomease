@@ -4,6 +4,7 @@ export const GlobalStyles = createGlobalStyle`
   body {
     background: ${({ theme }) => theme.body};
     color: ${({ theme }) => theme.text};
+    font-family: 'Quicksand', 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
