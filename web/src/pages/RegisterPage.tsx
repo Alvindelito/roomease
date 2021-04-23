@@ -1,6 +1,7 @@
+import { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
-import LargeButton from '../styles/LargeButton';
+import { FloatingLabel, Label, Input, LargeButtonStyle } from '../styles/index';
 import useForm from '../hooks/useForm';
 
 type RegisterInputType = {
@@ -17,12 +18,12 @@ const initValues: RegisterInputType = {
   password: '',
 };
 
-const RegisterButton = styled(LargeButton)`
+const RegisterButton = styled(LargeButtonStyle)`
   background-color: ${({ theme }) => theme.primary.primary600};
   color: ${({ theme }) => theme.neutral.white};
 `;
 
-const RegisterPage = () => {
+const RegisterPage: FC = () => {
   const { inputs, handleChange } = useForm(initValues);
 
   const handleSubmit = () => {
@@ -31,54 +32,45 @@ const RegisterPage = () => {
 
   return (
     <div>
-      <h1>Register Page</h1>
-
       <form method="/" onSubmit={handleSubmit}>
         <h2>Register</h2>
-        <label htmlFor="email">
-          Email:
-          <input
+        <FloatingLabel>
+          <Input
             type="email"
             name="email"
             value={inputs.email}
             onChange={handleChange}
-            placeholder="email"
           />
-        </label>
-        <label htmlFor="password">
-          Password:
-          <input
+          <Label htmlFor="email">Email:</Label>
+        </FloatingLabel>
+        <FloatingLabel>
+          <Input
             type="password"
             name="password"
             value={inputs.password}
             onChange={handleChange}
-            placeholder="password"
           />
-        </label>
-        <label htmlFor="firstName">
-          First Name:
-          <input
+          <Label htmlFor="password">Password:</Label>
+        </FloatingLabel>
+        <FloatingLabel>
+          <Input
             type="firstName"
             name="firstName"
             value={inputs.firstName}
             onChange={handleChange}
-            placeholder="First Name"
           />
-        </label>
-        <label htmlFor="lastName">
-          Last Name:
-          <input
+          <Label htmlFor="firstName">First Name:</Label>
+        </FloatingLabel>
+        <FloatingLabel>
+          <Input
             type="lastName"
             name="lastName"
             value={inputs.lastName}
             onChange={handleChange}
-            placeholder="Last Name"
           />
-        </label>
-        <RegisterButton type="submit">
-          <FontAwesomeIcon icon={['fas', 'coffee']} />
-          Register
-        </RegisterButton>
+          <Label htmlFor="lastName">Last Name:</Label>
+        </FloatingLabel>
+        <RegisterButton type="submit">REGISTER</RegisterButton>
       </form>
     </div>
   );
