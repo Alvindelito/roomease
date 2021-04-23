@@ -1,8 +1,10 @@
 import { FC } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
+import axios from 'axios';
 import { FloatingLabel, Label, Input, LargeButtonStyle } from '../styles/index';
 import useForm from '../hooks/useForm';
+
+import logo from '../assets/roomease_logo.png';
 
 type RegisterInputType = {
   email: string;
@@ -26,13 +28,27 @@ const RegisterButton = styled(LargeButtonStyle)`
 const RegisterPage: FC = () => {
   const { inputs, handleChange } = useForm(initValues);
 
-  const handleSubmit = () => {
-    // do something
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    try {
+      const submitData = await axios.post(
+        `${process.env.REACT_APP_API_LINK}/register`,
+        {
+          email: inputs.email,
+          plainPassword: inputs.password,
+          firstName: inputs.firstName,
+          lastName: inputs.lastName,
+        }
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <div>
-      <form method="/" onSubmit={handleSubmit}>
+      <img src={logo} alt="logo" />
+      <form onSubmit={handleSubmit}>
         <h2>Register</h2>
         <FloatingLabel>
           <Input
