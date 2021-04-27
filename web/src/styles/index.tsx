@@ -17,8 +17,10 @@ const FormStyle = styled.form`
 
 const RequiredInput = styled.span`
   color: ${({ theme }) => theme.negative.negative400};
-  font-size: 1.2rem;
+  font-size: 1rem;
 `;
+
+const FormError = styled.span(RequiredInput);
 
 const FloatingLabel = styled.div`
   display: flex;
@@ -75,6 +77,7 @@ const Input = styled.input`
 
 export {
   FormStyle,
+  FormError,
   RequiredInput,
   LargeButtonStyle,
   FloatingLabel,
