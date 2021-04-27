@@ -44,6 +44,10 @@ app.post('/register', async (req, res) => {
   const {email, password, firstName, lastName} = req.body;
 
   try {
+    const checkIfUserExists = await db.User.findOne({ email: email });
+
+    if (checkIfUserExists !== null) throw new Error('Email has already been used. Please use a different email.');
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = await new db.User({

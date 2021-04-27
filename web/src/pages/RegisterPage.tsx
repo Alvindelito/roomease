@@ -21,6 +21,7 @@ type FormData = {
   password: string;
   firstName: string;
   lastName: string;
+  server?: string;
 };
 
 const RegisterButton = styled(LargeButtonStyle)`
@@ -73,17 +74,25 @@ const RegisterPage: FC = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<FormData>(formOptions);
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
-    const submitData = await axios.post(
-      `${process.env.REACT_APP_API_LINK}/register`,
-      data
-    );
+    try {
+      console.log(data);
+      const submitData = await axios.post(
+        `${process.env.REACT_APP_API_LINK}/register`,
+        data
+      );
 
-    console.log(submitData);
+      console.log(await submitData);
+    } catch (err) {
+      setError('server', {
+        type: 'manual',
+        message: err.response.data.error,
+      });
+    }
   });
 
   return (
@@ -93,6 +102,9 @@ const RegisterPage: FC = () => {
       </LogoContainer>
       <FormStyle onSubmit={onSubmit}>
         <h2>Register New Account</h2>
+        {errors.server && (
+          <RequiredInput>{errors.server?.message}</RequiredInput>
+        )}
         <FloatingLabel>
           <Input type="email" {...register('email', { required: true })} />
           <Label htmlFor="email">
