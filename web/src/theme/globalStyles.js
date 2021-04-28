@@ -1,7 +1,11 @@
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
-  html, body {
+  html {
+    margin: 0;
+    padding: 0;
+  }
+  body {
     background: ${({ theme }) => theme.body};
     color: ${({ theme }) => theme.text};
     font-family: 'Quicksand', 'Roboto', sans-serif;
@@ -10,7 +14,7 @@ export const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  h1, h2, h3, h4, h5 {
+  h1, h2, h3, h4, h5, p {
     margin: 0
   }
 

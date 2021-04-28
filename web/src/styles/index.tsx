@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 // ---------BUTTONS---------
 const LargeButtonStyle = styled.button`
-  width: 335px;
+  width: 80vw;
   height: 52px;
   font-weight: 600;
   font-size: 1rem;
@@ -10,6 +10,17 @@ const LargeButtonStyle = styled.button`
 `;
 
 //  ---------FORMS---------
+
+const FormStyle = styled.form`
+  max-width: 100%;
+`;
+
+const RequiredInput = styled.span`
+  color: ${({ theme }) => theme.negative.negative400};
+  font-size: 1rem;
+`;
+
+const FormError = styled.span(RequiredInput);
 
 const FloatingLabel = styled.div`
   display: flex;
@@ -64,4 +75,12 @@ const Input = styled.input`
   }
 `;
 
-export { LargeButtonStyle, FloatingLabel, Label, Input };
+export {
+  FormStyle,
+  FormError,
+  RequiredInput,
+  LargeButtonStyle,
+  FloatingLabel,
+  Label,
+  Input,
+};
