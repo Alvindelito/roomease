@@ -16,10 +16,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors(
-  //   {
-  //   origin: 'http://localhost:3000',
-  //   credentials: true,
-  // }
+    {
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }
   )
 );
 app.use(morgan('dev'));
@@ -61,11 +61,11 @@ app.post('/register', async (req, res) => {
       isHouseholdOwner: false,
     });
 
-    newUser.save((err, result) => {
-      if (err) res.status(400).send(err);
-      else res.status(200).json(result);
-    })
+    const saveUser = await newUser.save();
+    if (saveUser) res.status(200).json(saveUser);
+
   } catch (err) {
+    console.log(err);
     res.status(400).send({ error: `${err}` });
   }
 
