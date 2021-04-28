@@ -9,6 +9,7 @@ import * as themes from './theme/theme.json';
 import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
 import SignInPage from './pages/SignInPage';
+import RegisterSuccessPage from './pages/RegisterSuccessPage';
 
 library.add(fas);
 
@@ -23,6 +24,9 @@ function App() {
           </Route>
           <Route path="/register">
             <RegisterPage />
+          </Route>
+          <Route path="/registersuccess">
+            <RegisterSuccessPage />
           </Route>
           <Route path="/signin">
             <SignInPage />

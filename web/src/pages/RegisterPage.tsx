@@ -100,7 +100,7 @@ const RegisterPage: FC = () => {
       <LogoContainer>
         <img src={logo} alt="logo" />
       </LogoContainer>
-      <FormStyle onSubmit={onSubmit}>
+      <FormStyle method="POST" onSubmit={onSubmit}>
         <h2>Register New Account</h2>
         {errors.server && (
           <RequiredInput>{errors.server?.message}</RequiredInput>
