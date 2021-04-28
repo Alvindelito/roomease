@@ -12,7 +12,7 @@ import {
   RequiredInput,
 } from '../styles/index';
 import logo from '../assets/roomease_logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { useForm } from 'react-hook-form';
 
@@ -70,7 +70,7 @@ const RegisterPage: FC = () => {
   });
 
   const formOptions = { resolver: yupResolver(validationSchema) };
-
+  const history = useHistory();
   const {
     register,
     handleSubmit,
@@ -81,12 +81,16 @@ const RegisterPage: FC = () => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       console.log(data);
-      const submitData = await axios.post(
+      const res = await axios.post(
         `${process.env.REACT_APP_API_LINK}/register`,
         data
       );
 
-      console.log(await submitData);
+      console.log(await res.status);
+
+      if (res.status === 200) {
+        return history.push('/registersuccess');
+      }
     } catch (err) {
       setError('server', {
         type: 'manual',
