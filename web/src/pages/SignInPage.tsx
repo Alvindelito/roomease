@@ -1,8 +1,11 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { Link, useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { loginUser, userSelector, clearState } from '../features/UserSlice';
+
 import {
   FormStyle,
   FloatingLabel,
@@ -12,7 +15,6 @@ import {
   RequiredInput,
 } from '../styles/index';
 import logo from '../assets/roomease_logo.png';
-import { Link, useHistory } from 'react-router-dom';
 
 import { useForm } from 'react-hook-form';
 
@@ -56,13 +58,18 @@ const LogoContainer = styled.div`
 `;
 
 const SignInPage: FC = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { isFetching, isSuccess, isError, errorMessage } = useSelector(
+    userSelector
+  );
+
   const validationSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string().required('Password is required'),
   });
 
   const formOptions = { resolver: yupResolver(validationSchema) };
-  const history = useHistory();
   const {
     register,
     handleSubmit,
@@ -70,28 +77,37 @@ const SignInPage: FC = () => {
     formState: { errors },
   } = useForm<FormData>(formOptions);
 
-  const onSubmit = handleSubmit(async (data) => {
-    console.log(`url ${process.env.REACT_APP_AUTH_SERVER}`);
-    try {
-      console.log(data);
-      const res = await axios.post(`http://localhost:4000/login`, data);
+  const onSubmit = (data: any) => {
+    dispatch(loginUser(data));
+  };
 
-      localStorage.setItem('accessToken', res.data.accessToken);
-    } catch (err) {
-      // setError('server', {
-      //   type: 'manual',
-      //   message: err.response.data.error,
-      // });
-      console.log(err);
+  useEffect(() => {
+    return () => {
+      dispatch(clearState());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isError) {
+      setError('server', {
+        type: 'manual',
+        message: errorMessage,
+      });
+      dispatch(clearState());
     }
-  });
+
+    if (isSuccess) {
+      dispatch(clearState());
+      history.push('/');
+    }
+  }, [isError, isSuccess]);
 
   return (
     <RegisterContainer>
       <LogoContainer>
         <img src={logo} alt="logo" />
       </LogoContainer>
-      <FormStyle method="POST" onSubmit={onSubmit}>
+      <FormStyle method="POST" onSubmit={handleSubmit(onSubmit)}>
         <h2>Sign In</h2>
         {errors.server && (
           <RequiredInput>{errors.server?.message}</RequiredInput>

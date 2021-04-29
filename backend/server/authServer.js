@@ -40,6 +40,9 @@ app.delete('/logout', (req, res) => {
   res.sendStatus(204);
 })
 
+/** TODO: check if user exists, if not throw error.
+ *  check if password is a match, if not throw error
+ */
 app.post('/login', async (req, res) => {
   const email = req.body.email;
   const plainTextPassword = req.body.password
