@@ -1,5 +1,4 @@
 import { FC, useEffect } from 'react';
-import styled from 'styled-components';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Link, useHistory } from 'react-router-dom';
@@ -11,7 +10,6 @@ import {
   FloatingLabel,
   Label,
   Input,
-  LargeButtonStyle,
   RequiredInput,
   FormButton,
   FormContainer,
