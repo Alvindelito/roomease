@@ -82,10 +82,7 @@ const RegisterPage: FC = () => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       console.log(data);
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_LINK}/register`,
-        data
-      );
+      const res = await axios.post(`http://localhost:3009/register`, data);
 
       console.log(await res.status);
 
@@ -93,6 +90,7 @@ const RegisterPage: FC = () => {
         return history.push('/registersuccess');
       }
     } catch (err) {
+      console.log(`wtf is error`, err.response);
       setError('server', {
         type: 'manual',
         message: err.response.data.error,

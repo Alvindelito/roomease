@@ -85,7 +85,7 @@ const SignInPage: FC = () => {
     return () => {
       dispatch(clearState());
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (isError) {
@@ -100,7 +100,7 @@ const SignInPage: FC = () => {
       dispatch(clearState());
       history.push('/');
     }
-  }, [isError, isSuccess]);
+  }, [isError, isSuccess, dispatch, errorMessage, history, setError]);
 
   return (
     <RegisterContainer>
@@ -138,7 +138,9 @@ const SignInPage: FC = () => {
         <p>
           Don't have an account? <Link to="/register">Sign Up Here</Link>
         </p>
-        <RegisterButton type="submit">SIGN IN</RegisterButton>
+        <RegisterButton type="submit">
+          {isFetching ? 'LOADING' : 'SIGN IN'}
+        </RegisterButton>
       </FormStyle>
     </RegisterContainer>
   );

@@ -1,14 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// TODO: handle server error
-
 export const loginUser: any = createAsyncThunk(
   'users/login',
   async (body: any, thunkAPI) => {
     try {
       const response = await axios.post('http://localhost:4000/login', body);
-      console.log('response', response);
       if (response.status === 200) {
         localStorage.setItem('accessToken', response.data.accessToken);
         return response.data;
@@ -16,8 +13,8 @@ export const loginUser: any = createAsyncThunk(
         return thunkAPI.rejectWithValue(response.data);
       }
     } catch (err) {
-      console.log('Error', err.response.data);
-      thunkAPI.rejectWithValue(err.response.data);
+      console.error(err.response.data.error);
+      return thunkAPI.rejectWithValue(err.response.data);
     }
   }
 );
@@ -45,12 +42,12 @@ export const userSlice = createSlice({
       state.email = payload.email;
       state.isFetching = false;
       state.isSuccess = true;
+      return state;
     },
     [loginUser.rejected]: (state, { payload }) => {
-      console.log('payload', payload);
       state.isFetching = false;
       state.isError = true;
-      state.errorMessage = 'something bad happened';
+      state.errorMessage = payload.error;
     },
     [loginUser.pending]: (state) => {
       state.isFetching = true;
