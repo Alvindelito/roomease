@@ -22,6 +22,37 @@ const RequiredInput = styled.span`
 
 const FormError = styled.span(RequiredInput);
 
+const FormButton = styled(LargeButtonStyle)`
+  background-color: ${({ theme }) => theme.primary.primary600};
+  color: ${({ theme }) => theme.neutral.white};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100vh;
+  justify-content: center;
+  width: 100%;
+
+  h2 {
+    text-align: center;
+  }
+
+  p {
+    margin: 12px auto;
+    text-align: center;
+  }
+`;
+
+const LogoContainer = styled.div`
+  height: 15vh;
+`;
+
 const FloatingLabel = styled.div`
   display: flex;
   flex-direction: column;
@@ -77,7 +108,10 @@ const Input = styled.input`
 
 export {
   FormStyle,
+  FormButton,
+  FormContainer,
   FormError,
+  LogoContainer,
   RequiredInput,
   LargeButtonStyle,
   FloatingLabel,
