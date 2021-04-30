@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
@@ -49,8 +49,11 @@ app.post('/login', async (req, res) => {
 
   try {
     let user = await User.findOne({ email: email });
-    const match = await bcrypt.compare(user.password, plainTextPassword);
-
+    console.log(`user ${user}`)
+    if (!user) throw new Error('Email or Password are incorrect');
+    const match = await bcrypt.compare(plainTextPassword, user.password);
+    console.log(`match ${await match}`)
+    if (!match) throw new Error('Email or Password are incorrect');
     const userTokenDetails = {
       id: user._id,
       email: user.email
@@ -74,7 +77,7 @@ app.post('/login', async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.sendStatus(403);
+    res.status(403).send({ error: `${err}` });
   }
 
 })
