@@ -1,21 +1,21 @@
 import { FC } from 'react';
-import styled from 'styled-components';
 import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Link, useHistory } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
 import {
   FormStyle,
   FloatingLabel,
   Label,
   Input,
-  LargeButtonStyle,
   RequiredInput,
+  FormButton,
+  FormContainer,
+  LogoContainer,
 } from '../styles/index';
 import logo from '../assets/roomease_logo.png';
-
-import { useForm } from 'react-hook-form';
 
 type FormData = {
   email: string;
@@ -24,37 +24,6 @@ type FormData = {
   lastName: string;
   server?: string;
 };
-
-const RegisterButton = styled(LargeButtonStyle)`
-  background-color: ${({ theme }) => theme.primary.primary600};
-  color: ${({ theme }) => theme.neutral.white};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-`;
-
-const RegisterContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  height: 100vh;
-  justify-content: center;
-  width: 100%;
-
-  h2 {
-    text-align: center;
-  }
-
-  p {
-    margin: 12px auto;
-    text-align: center;
-  }
-`;
-
-const LogoContainer = styled.div`
-  height: 15vh;
-`;
 
 const RegisterPage: FC = () => {
   const validationSchema = Yup.object().shape({
@@ -81,16 +50,12 @@ const RegisterPage: FC = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      console.log(data);
       const res = await axios.post(`http://localhost:3009/register`, data);
-
-      console.log(await res.status);
 
       if (res.status === 200) {
         return history.push('/registersuccess');
       }
     } catch (err) {
-      console.log(`wtf is error`, err.response);
       setError('server', {
         type: 'manual',
         message: err.response.data.error,
@@ -99,7 +64,7 @@ const RegisterPage: FC = () => {
   });
 
   return (
-    <RegisterContainer>
+    <FormContainer>
       <LogoContainer>
         <img src={logo} alt="logo" />
       </LogoContainer>
@@ -151,9 +116,9 @@ const RegisterPage: FC = () => {
         <p>
           Already have an account? <Link to="/signin">Sign In Here</Link>
         </p>
-        <RegisterButton type="submit">SIGN UP</RegisterButton>
+        <FormButton type="submit">SIGN UP</FormButton>
       </FormStyle>
-    </RegisterContainer>
+    </FormContainer>
   );
 };
 

@@ -13,6 +13,9 @@ import {
   Input,
   LargeButtonStyle,
   RequiredInput,
+  FormButton,
+  FormContainer,
+  LogoContainer,
 } from '../styles/index';
 import logo from '../assets/roomease_logo.png';
 
@@ -21,41 +24,8 @@ import { useForm } from 'react-hook-form';
 type FormData = {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
   server?: string;
 };
-
-const RegisterButton = styled(LargeButtonStyle)`
-  background-color: ${({ theme }) => theme.primary.primary600};
-  color: ${({ theme }) => theme.neutral.white};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-`;
-
-const RegisterContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  height: 100vh;
-  justify-content: center;
-  width: 100%;
-
-  h2 {
-    text-align: center;
-  }
-
-  p {
-    margin: 12px auto;
-    text-align: center;
-  }
-`;
-
-const LogoContainer = styled.div`
-  height: 15vh;
-`;
 
 const SignInPage: FC = () => {
   const dispatch = useDispatch();
@@ -103,7 +73,7 @@ const SignInPage: FC = () => {
   }, [isError, isSuccess, dispatch, errorMessage, history, setError]);
 
   return (
-    <RegisterContainer>
+    <FormContainer>
       <LogoContainer>
         <img src={logo} alt="logo" />
       </LogoContainer>
@@ -138,11 +108,11 @@ const SignInPage: FC = () => {
         <p>
           Don't have an account? <Link to="/register">Sign Up Here</Link>
         </p>
-        <RegisterButton type="submit">
+        <FormButton disabled={isFetching} type="submit">
           {isFetching ? 'LOADING' : 'SIGN IN'}
-        </RegisterButton>
+        </FormButton>
       </FormStyle>
-    </RegisterContainer>
+    </FormContainer>
   );
 };
 
