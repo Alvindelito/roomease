@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { Link, useHistory } from 'react-router-dom';
+
 import {
   FormStyle,
   FloatingLabel,
@@ -12,7 +14,6 @@ import {
   RequiredInput,
 } from '../styles/index';
 import logo from '../assets/roomease_logo.png';
-import { Link, useHistory } from 'react-router-dom';
 
 import { useForm } from 'react-hook-form';
 
