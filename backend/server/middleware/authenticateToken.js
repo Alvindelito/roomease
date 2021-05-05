@@ -1,15 +1,19 @@
 const jwt = require('jsonwebtoken');
+const express = require('express');
 
 module.exports = (req, res, next) => {
-  console.log(`req.headers`, req.headers)
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  if (token == null) return res.sendStatus(401)
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    console.error(err);
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  })
+  if (!token) {
+    return res.sendStatus(401)
+  } else {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+      // console.error(err);
+      if (err) {
+        return res.sendStatus(403);
+      }
+      req.user = user;
+      next();
+    })
+  }
 };

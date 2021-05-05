@@ -5,8 +5,11 @@ export const loginUser: any = createAsyncThunk(
   'users/login',
   async (body: any, thunkAPI) => {
     try {
-      const response = await axios.post('http://localhost:4000/login', body);
+      const response = await axios.post('http://localhost:4000/login', body, {
+        withCredentials: true,
+      });
       if (response.status === 200) {
+        console.log('saved new token to local storage');
         localStorage.setItem('accessToken', response.data.accessToken);
         return response.data;
       } else {

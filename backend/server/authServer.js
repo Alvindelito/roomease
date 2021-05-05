@@ -12,26 +12,31 @@ const { User } = require('../database/index');
 app.use(
   cors(
     {
-    origin: 'http://localhost:3000',
-    credentials: true,
+      origin: 'http://localhost:3000',
+      credentials: true,
   }
   )
 );
-app.use(express.json());
 app.use(cookieParser());
+app.use(express.json());
 app.use(morgan('dev'));
 
 let refreshTokens = [];
 
 app.post('/token', (req, res) => {
   const {refreshToken} = req.cookies;
-  console.log(`this is the fresh token ${refreshToken}`);
-  if (refreshToken == null) return res.sendStatus(403);
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+  if (refreshToken == null) {
+    return res.sendStatus(403);
+  }
+  if (!refreshTokens.includes(refreshToken)) {
+    return res.sendStatus(403);
+  }
+
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
-    const accessToken = generateAccessToken({ name: user.email }) //
-    res.json({ accessToken: accessToken })
+    const accessToken = generateAccessToken({ id: user.id,
+      email: user.email })
+    res.json({ accessToken })
   });
 })
 
@@ -49,10 +54,8 @@ app.post('/login', async (req, res) => {
 
   try {
     let user = await User.findOne({ email: email });
-    console.log(`user ${user}`)
     if (!user) throw new Error('Email or Password are incorrect');
     const match = await bcrypt.compare(plainTextPassword, user.password);
-    console.log(`match ${await match}`)
     if (!match) throw new Error('Email or Password are incorrect');
     const userTokenDetails = {
       id: user._id,
@@ -66,7 +69,8 @@ app.post('/login', async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production' ? true: false,
-      sameSite: 'strict'
+      sameSite: 'strict',
+      maxAge: 604800000,
     })
 
 

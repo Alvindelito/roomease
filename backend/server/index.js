@@ -28,7 +28,7 @@ app.use(morgan('dev'));
 app.get('/api/me', authenticateToken, async (req, res) => {
   const user = await db.User.findById(req.user.id);
   if (user) res.status(200).json(user);
-  else res.sendStatus(401);
+  else res.sendStatus(403);
 });
 
 app.get('/api/household/:id', authenticateToken, async (req, res) => {

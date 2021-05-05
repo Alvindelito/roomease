@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import store from './app/store';
 import { Provider } from 'react-redux';
+
+import store from './app/store';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+import axios from 'axios';
+import { setupInterceptorsTo } from '../src/helpers/interceptors';
+setupInterceptorsTo(axios);
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

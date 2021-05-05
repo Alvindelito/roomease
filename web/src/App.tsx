@@ -4,12 +4,14 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
+import PrivateRoute from './helpers/PrivateRoute';
 import { GlobalStyles } from './theme/globalStyles';
 import * as themes from './theme/theme.json';
 import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
 import SignInPage from './pages/SignInPage';
 import RegisterSuccessPage from './pages/RegisterSuccessPage';
+import Protected from './pages/Protected';
 
 library.add(fas);
 
@@ -31,6 +33,10 @@ function App() {
           <Route path="/signin">
             <SignInPage />
           </Route>
+
+          <PrivateRoute exact path="/protected">
+            <Protected />
+          </PrivateRoute>
         </ThemeProvider>
       </Switch>
     </Router>
