@@ -1,21 +1,11 @@
-import { screen, render } from '@testing-library/react';
-import { ThemeProvider } from 'styled-components';
-import { BrowserRouter } from 'react-router-dom';
-import * as themes from '../theme/theme.json';
-
+import { render, fireEvent } from '../test-utils';
+import { screen } from '@testing-library/react';
 import RegisterPage from './RegisterPage';
-import { GlobalStyles } from '../theme/globalStyles';
 
 describe('Register Form', () => {
   it('should render the basic fields', () => {
-    render(
-      <BrowserRouter>
-        <ThemeProvider theme={themes.light}>
-          <GlobalStyles />
-          <RegisterPage />
-        </ThemeProvider>
-      </BrowserRouter>
-    );
+    render(<RegisterPage />);
+
     expect(
       screen.getByRole('heading', { name: 'Register New Account' })
     ).toBeInTheDocument();
@@ -35,5 +25,19 @@ describe('Register Form', () => {
     expect(
       screen.getByRole('button', { name: /SIGN UP/i })
     ).toBeInTheDocument();
+  });
+
+  it('should display required errors when value is invalid', async () => {
+    render(<RegisterPage />);
+
+    const emailInput = screen.getByRole('textbox', { name: /email/i });
+    fireEvent.input(emailInput, {
+      target: {
+        value: 'mrkrabs',
+      },
+    });
+
+    fireEvent.submit(screen.getByRole('button', { name: /SIGN UP/i }));
+    expect(await screen.findAllByRole('alert')).toHaveLength(4);
   });
 });
