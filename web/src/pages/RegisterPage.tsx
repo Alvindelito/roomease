@@ -73,8 +73,13 @@ const RegisterPage: FC = () => {
         {errors.server && (
           <RequiredInput>{errors.server?.message}</RequiredInput>
         )}
+
         <FloatingLabel>
-          <Input type="email" {...register('email', { required: true })} />
+          <Input
+            type="email"
+            id="email"
+            {...register('email', { required: true })}
+          />
           <Label htmlFor="email">
             Email
             <RequiredInput>
@@ -83,9 +88,11 @@ const RegisterPage: FC = () => {
             &nbsp;
           </Label>
         </FloatingLabel>
+
         <FloatingLabel>
           <Input
             type="password"
+            id="password"
             {...register('password', { required: true })}
           />
           <Label htmlFor="password">
@@ -95,8 +102,13 @@ const RegisterPage: FC = () => {
             </RequiredInput>
           </Label>
         </FloatingLabel>
+
         <FloatingLabel>
-          <Input type="text" {...register('firstName', { required: true })} />
+          <Input
+            type="text"
+            id="firstName"
+            {...register('firstName', { required: true })}
+          />
           <Label htmlFor="firstName">
             First Name
             <RequiredInput>
@@ -104,8 +116,13 @@ const RegisterPage: FC = () => {
             </RequiredInput>
           </Label>
         </FloatingLabel>
+
         <FloatingLabel>
-          <Input type="text" {...register('lastName', { required: true })} />
+          <Input
+            type="text"
+            id="lastName"
+            {...register('lastName', { required: true })}
+          />
           <Label htmlFor="lastName">
             Last Name
             <RequiredInput>
@@ -113,9 +130,11 @@ const RegisterPage: FC = () => {
             </RequiredInput>
           </Label>
         </FloatingLabel>
+
         <p>
           Already have an account? <Link to="/signin">Sign In Here</Link>
         </p>
+
         <FormButton type="submit">SIGN UP</FormButton>
       </FormStyle>
     </FormContainer>
