@@ -31,5 +31,9 @@ describe('Register Form', () => {
     expect(
       screen.getByRole('textbox', { name: /Last Name/i })
     ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', { name: /SIGN UP/i })
+    ).toBeInTheDocument();
   });
 });
