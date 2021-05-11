@@ -11,6 +11,7 @@ import {
   Label,
   Input,
   RequiredInput,
+  ErrorMessage,
   FormButton,
   FormContainer,
   LogoContainer,
@@ -70,9 +71,7 @@ const RegisterPage: FC = () => {
       </LogoContainer>
       <FormStyle method="POST" onSubmit={onSubmit}>
         <h2>Register New Account</h2>
-        {errors.server && (
-          <RequiredInput>{errors.server?.message}</RequiredInput>
-        )}
+        {errors.server && <ErrorMessage>{errors.server?.message}</ErrorMessage>}
 
         <FloatingLabel>
           <Input
@@ -82,10 +81,11 @@ const RegisterPage: FC = () => {
           />
           <Label htmlFor="email">
             Email
-            <RequiredInput>
-              * {errors.email && errors.email?.message}
-            </RequiredInput>
+            <RequiredInput>*</RequiredInput>
             &nbsp;
+            <ErrorMessage role="alert">
+              {errors.email && errors.email?.message}
+            </ErrorMessage>
           </Label>
         </FloatingLabel>
 
@@ -97,9 +97,11 @@ const RegisterPage: FC = () => {
           />
           <Label htmlFor="password">
             Password
-            <RequiredInput>
-              * {errors.password && errors.password?.message}
-            </RequiredInput>
+            <RequiredInput>*</RequiredInput>
+            &nbsp;
+            <ErrorMessage role="alert">
+              {errors.password && errors.password?.message}
+            </ErrorMessage>
           </Label>
         </FloatingLabel>
 
@@ -111,9 +113,11 @@ const RegisterPage: FC = () => {
           />
           <Label htmlFor="firstName">
             First Name
-            <RequiredInput>
-              * {errors.firstName && errors.firstName?.message}
-            </RequiredInput>
+            <RequiredInput>*</RequiredInput>
+            &nbsp;
+            <ErrorMessage role="alert">
+              {errors.firstName && errors.firstName?.message}
+            </ErrorMessage>
           </Label>
         </FloatingLabel>
 
@@ -125,9 +129,11 @@ const RegisterPage: FC = () => {
           />
           <Label htmlFor="lastName">
             Last Name
-            <RequiredInput>
-              * {errors.lastName && errors.lastName?.message}
-            </RequiredInput>
+            <RequiredInput>*</RequiredInput>
+            &nbsp;
+            <ErrorMessage role="alert">
+              {errors.lastName && errors.lastName?.message}
+            </ErrorMessage>
           </Label>
         </FloatingLabel>
 

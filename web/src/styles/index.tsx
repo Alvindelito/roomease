@@ -20,6 +20,11 @@ const RequiredInput = styled.span`
   font-size: 1rem;
 `;
 
+const ErrorMessage = styled.span`
+  color: ${({ theme }) => theme.negative.negative400};
+  font-size: 1rem;
+`;
+
 const FormError = styled.span(RequiredInput);
 
 const FormButton = styled(LargeButtonStyle)`
@@ -113,6 +118,7 @@ export {
   FormError,
   LogoContainer,
   RequiredInput,
+  ErrorMessage,
   LargeButtonStyle,
   FloatingLabel,
   Label,
