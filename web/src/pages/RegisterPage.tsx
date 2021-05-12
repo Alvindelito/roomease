@@ -83,9 +83,9 @@ const RegisterPage: FC = () => {
             Email
             <RequiredInput>*</RequiredInput>
             &nbsp;
-            <ErrorMessage role="alert">
-              {errors.email && errors.email?.message}
-            </ErrorMessage>
+            {errors.email && (
+              <ErrorMessage role="alert">errors.email?.message</ErrorMessage>
+            )}
           </Label>
         </FloatingLabel>
 
@@ -99,9 +99,9 @@ const RegisterPage: FC = () => {
             Password
             <RequiredInput>*</RequiredInput>
             &nbsp;
-            <ErrorMessage role="alert">
-              {errors.password && errors.password?.message}
-            </ErrorMessage>
+            {errors.password && (
+              <ErrorMessage role="alert">errors.password?.message</ErrorMessage>
+            )}
           </Label>
         </FloatingLabel>
 
@@ -115,9 +115,11 @@ const RegisterPage: FC = () => {
             First Name
             <RequiredInput>*</RequiredInput>
             &nbsp;
-            <ErrorMessage role="alert">
-              {errors.firstName && errors.firstName?.message}
-            </ErrorMessage>
+            {errors.firstName && (
+              <ErrorMessage role="alert">
+                errors.firstName?.message
+              </ErrorMessage>
+            )}
           </Label>
         </FloatingLabel>
 
@@ -131,9 +133,9 @@ const RegisterPage: FC = () => {
             Last Name
             <RequiredInput>*</RequiredInput>
             &nbsp;
-            <ErrorMessage role="alert">
-              {errors.lastName && errors.lastName?.message}
-            </ErrorMessage>
+            {errors.lastName && (
+              <ErrorMessage role="alert">errors.lastName?.message</ErrorMessage>
+            )}
           </Label>
         </FloatingLabel>
 
