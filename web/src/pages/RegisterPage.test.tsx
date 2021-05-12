@@ -1,10 +1,25 @@
 import { render, fireEvent } from '../test-utils';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import RegisterPage from './RegisterPage';
+
+let RES = {
+  _id: '609c03bbffe5765bbedc9981',
+  email: 'add@a.com',
+  password: '$2b$10$siSBTLT0M31GviTtIa8.teYY9l/vHElmvMvLn.eTtLgXTv/uFVS7W',
+  firstName: 'a',
+  lastName: 'd',
+  householdId: '',
+  isHouseholdOwner: false,
+  __v: 0,
+};
+
+const mockRegister = jest.fn((data) => {
+  return Promise.resolve({ RES });
+});
 
 describe('Register Form', () => {
   beforeEach(() => {
-    render(<RegisterPage />);
+    render(<RegisterPage registerCall={mockRegister} />);
 
     fireEvent.input(screen.getByRole('textbox', { name: /email/i }), {
       target: {
@@ -136,5 +151,19 @@ describe('Register Form', () => {
 
     fireEvent.submit(screen.getByRole('button', { name: /SIGN UP/i }));
     expect(await screen.findAllByRole('alert')).toHaveLength(2);
+  });
+
+  it('should successfully call axios', async () => {
+    fireEvent.submit(screen.getByRole('button', { name: /SIGN UP/i }));
+
+    let DATA = {
+      email: 'mrkrabs@mrkrabs.com',
+      password: 'password',
+      firstName: 'Eugene',
+      lastName: 'Krabs',
+    };
+
+    await waitFor(() => expect(screen.queryAllByRole('alert')).toHaveLength(0));
+    expect(mockRegister).toBeCalledWith(DATA);
   });
 });

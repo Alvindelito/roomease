@@ -26,7 +26,7 @@ type FormData = {
   server?: string;
 };
 
-const RegisterPage: FC = () => {
+const RegisterPage = ({ registerCall }: any) => {
   const validationSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
@@ -49,27 +49,41 @@ const RegisterPage: FC = () => {
     formState: { errors },
   } = useForm<FormData>(formOptions);
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = async (data: any) => {
     try {
-      const res = await axios.post(`http://localhost:3009/register`, data);
-
+      const res = await registerCall(data);
       if (res.status === 200) {
         return history.push('/registersuccess');
       }
     } catch (err) {
       setError('server', {
         type: 'manual',
-        message: err.response.data.error,
+        message: err?.response?.data?.error,
       });
     }
-  });
+  };
+
+  // const onSubmit = handleSubmit(async (data) => {
+  //   try {
+  //     const res = await axios.post(`http://localhost:3009/register`, data);
+
+  //     if (res.status === 200) {
+  //       return history.push('/registersuccess');
+  //     }
+  //   } catch (err) {
+  //     setError('server', {
+  //       type: 'manual',
+  //       message: err.response.data.error,
+  //     });
+  //   }
+  // });
 
   return (
     <FormContainer>
       <LogoContainer>
         <img src={logo} alt="logo" />
       </LogoContainer>
-      <FormStyle method="POST" onSubmit={onSubmit}>
+      <FormStyle method="POST" onSubmit={handleSubmit(onSubmit)}>
         <h2>Register New Account</h2>
         {errors.server && <ErrorMessage>{errors.server?.message}</ErrorMessage>}
 

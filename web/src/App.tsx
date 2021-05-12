@@ -12,6 +12,7 @@ import RegisterPage from './pages/RegisterPage';
 import SignInPage from './pages/SignInPage';
 import RegisterSuccessPage from './pages/RegisterSuccessPage';
 import Protected from './pages/Protected';
+import { registerCall } from './helpers/registerCall';
 
 library.add(fas);
 
@@ -25,7 +26,7 @@ function App() {
             <HomePage />
           </Route>
           <Route path="/register">
-            <RegisterPage />
+            <RegisterPage registerCall={registerCall} />
           </Route>
           <Route path="/registersuccess">
             <RegisterSuccessPage />
