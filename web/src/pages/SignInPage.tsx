@@ -11,6 +11,7 @@ import {
   Label,
   Input,
   RequiredInput,
+  ErrorMessage,
   FormButton,
   FormContainer,
   LogoContainer,
@@ -78,14 +79,23 @@ const SignInPage: FC = () => {
       <FormStyle method="POST" onSubmit={handleSubmit(onSubmit)}>
         <h2>Sign In</h2>
         {errors.server && (
-          <RequiredInput>{errors.server?.message}</RequiredInput>
+          <ErrorMessage role="alert">{errors.server?.message}</ErrorMessage>
         )}
         <FloatingLabel>
-          <Input type="email" {...register('email', { required: true })} />
+          <Input
+            type="email"
+            id="email"
+            {...register('email', { required: true })}
+          />
           <Label htmlFor="email">
             Email
             <RequiredInput>
-              * {errors.email && errors.email?.message}
+              *
+              {errors.email && (
+                <ErrorMessage role="alert">
+                  {errors.email?.message}
+                </ErrorMessage>
+              )}
             </RequiredInput>
             &nbsp;
           </Label>
@@ -93,12 +103,18 @@ const SignInPage: FC = () => {
         <FloatingLabel>
           <Input
             type="password"
+            id="password"
             {...register('password', { required: true })}
           />
           <Label htmlFor="password">
             Password
             <RequiredInput>
-              * {errors.password && errors.password?.message}
+              *
+              {errors.password && (
+                <ErrorMessage role="alert">
+                  {errors.password?.message}
+                </ErrorMessage>
+              )}
             </RequiredInput>
           </Label>
         </FloatingLabel>

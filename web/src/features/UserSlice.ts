@@ -16,7 +16,7 @@ export const loginUser: any = createAsyncThunk(
         return thunkAPI.rejectWithValue(response.data);
       }
     } catch (err) {
-      console.error(err.response.data.error);
+      console.log(err.response.data.error);
       return thunkAPI.rejectWithValue(err.response.data);
     }
   }
@@ -50,7 +50,7 @@ export const userSlice = createSlice({
     [loginUser.rejected]: (state, { payload }) => {
       state.isFetching = false;
       state.isError = true;
-      state.errorMessage = payload.error;
+      state.errorMessage = payload?.error;
     },
     [loginUser.pending]: (state) => {
       state.isFetching = true;
