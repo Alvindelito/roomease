@@ -53,7 +53,6 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
     });
   } else {
     return new Promise((resolve, reject) => {
-      console.log('hittin that thing');
       reject(error);
     });
   }

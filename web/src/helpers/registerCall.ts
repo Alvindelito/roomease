@@ -10,13 +10,8 @@ type dataType = {
 export const registerCall = async (data: dataType) => {
   try {
     const res = await axios.post(`http://localhost:3009/register`, data);
-
-    return new Promise((resolve, reject) => {
-      if (res) resolve(res);
-    });
+    if (res) return Promise.resolve(res);
   } catch (err) {
-    return new Promise((resolve, reject) => {
-      reject(err);
-    });
+    return Promise.reject(err);
   }
 };

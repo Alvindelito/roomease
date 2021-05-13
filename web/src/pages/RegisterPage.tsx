@@ -1,5 +1,3 @@
-import { FC } from 'react';
-import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Link, useHistory } from 'react-router-dom';
@@ -51,10 +49,8 @@ const RegisterPage = ({ registerCall }: any) => {
 
   const onSubmit = async (data: any) => {
     try {
-      const res = await registerCall(data);
-      if (res.status === 200) {
-        return history.push('/registersuccess');
-      }
+      await registerCall(data);
+      return history.push('/registersuccess');
     } catch (err) {
       setError('server', {
         type: 'manual',
@@ -63,21 +59,6 @@ const RegisterPage = ({ registerCall }: any) => {
     }
   };
 
-  // const onSubmit = handleSubmit(async (data) => {
-  //   try {
-  //     const res = await axios.post(`http://localhost:3009/register`, data);
-
-  //     if (res.status === 200) {
-  //       return history.push('/registersuccess');
-  //     }
-  //   } catch (err) {
-  //     setError('server', {
-  //       type: 'manual',
-  //       message: err.response.data.error,
-  //     });
-  //   }
-  // });
-
   return (
     <FormContainer>
       <LogoContainer>
@@ -85,7 +66,9 @@ const RegisterPage = ({ registerCall }: any) => {
       </LogoContainer>
       <FormStyle method="POST" onSubmit={handleSubmit(onSubmit)}>
         <h2>Register New Account</h2>
-        {errors.server && <ErrorMessage>{errors.server?.message}</ErrorMessage>}
+        {errors.server && (
+          <ErrorMessage role="alert">{errors.server?.message}</ErrorMessage>
+        )}
 
         <FloatingLabel>
           <Input
@@ -98,7 +81,7 @@ const RegisterPage = ({ registerCall }: any) => {
             <RequiredInput>*</RequiredInput>
             &nbsp;
             {errors.email && (
-              <ErrorMessage role="alert">errors.email?.message</ErrorMessage>
+              <ErrorMessage role="alert">{errors.email?.message}</ErrorMessage>
             )}
           </Label>
         </FloatingLabel>
@@ -114,7 +97,9 @@ const RegisterPage = ({ registerCall }: any) => {
             <RequiredInput>*</RequiredInput>
             &nbsp;
             {errors.password && (
-              <ErrorMessage role="alert">errors.password?.message</ErrorMessage>
+              <ErrorMessage role="alert">
+                {errors.password?.message}
+              </ErrorMessage>
             )}
           </Label>
         </FloatingLabel>
@@ -131,7 +116,7 @@ const RegisterPage = ({ registerCall }: any) => {
             &nbsp;
             {errors.firstName && (
               <ErrorMessage role="alert">
-                errors.firstName?.message
+                {errors.firstName?.message}
               </ErrorMessage>
             )}
           </Label>
@@ -148,7 +133,9 @@ const RegisterPage = ({ registerCall }: any) => {
             <RequiredInput>*</RequiredInput>
             &nbsp;
             {errors.lastName && (
-              <ErrorMessage role="alert">errors.lastName?.message</ErrorMessage>
+              <ErrorMessage role="alert">
+                {errors.lastName?.message}
+              </ErrorMessage>
             )}
           </Label>
         </FloatingLabel>
