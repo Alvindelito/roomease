@@ -1,10 +1,7 @@
-import { render, fireEvent } from '../test-utils';
-import { screen, waitFor } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '../test-utils';
 import RegisterPage from './RegisterPage';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
-
-// TODO: add test coverage for link to sign in page.
 
 const RES = {
   _id: '609c03bbffe5765bbedc9981',
@@ -176,7 +173,7 @@ describe('Register Form Validation', () => {
   });
 });
 
-describe('Register Form Success Push History to Success Page', () => {
+describe('Register Page Redirects', () => {
   afterAll(() => {
     jest.resetAllMocks();
   });
@@ -227,6 +224,20 @@ describe('Register Form Success Push History to Success Page', () => {
     expect(mockRegister).toBeCalledWith(DATA);
 
     expect(pushSpy).toHaveBeenCalledWith('/registersuccess');
+  });
+
+  it('should redirect to sign in page when clicking link to sign in', async () => {
+    const history = createMemoryHistory();
+    const pushSpy = jest.spyOn(history, 'push');
+
+    render(
+      <Router history={history}>
+        <RegisterPage registerCall={mockRegister} />
+      </Router>
+    );
+
+    fireEvent.click(screen.getByText(/Sign In Here/i));
+    expect(pushSpy).toHaveBeenCalledWith('/signin');
   });
 });
 
