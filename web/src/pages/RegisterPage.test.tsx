@@ -4,6 +4,8 @@ import RegisterPage from './RegisterPage';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 
+// TODO: add test coverage for link to sign in page.
+
 const RES = {
   _id: '609c03bbffe5765bbedc9981',
   email: 'mrkrabs@mrkrabs.com',
