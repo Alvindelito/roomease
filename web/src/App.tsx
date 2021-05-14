@@ -14,6 +14,9 @@ import RegisterSuccessPage from './pages/RegisterSuccessPage';
 import Protected from './pages/Protected';
 import { registerCall } from './helpers/registerCall';
 import NavBar from './components/navigation/NavBar';
+import ExpensesPage from './pages/expenses/ExpensesPage';
+import ChoresPage from './pages/chores/ChoresPage';
+import GroceriesPage from './pages/groceries/GroceriesPage';
 
 library.add(fas);
 
@@ -34,6 +37,15 @@ function App() {
           </Route>
           <Route path="/signin">
             <SignInPage />
+          </Route>
+          <Route path="/expenses">
+            <ExpensesPage />
+          </Route>
+          <Route path="/chores">
+            <ChoresPage />
+          </Route>
+          <Route path="/groceries">
+            <GroceriesPage />
           </Route>
 
           <PrivateRoute exact path="/protected">
