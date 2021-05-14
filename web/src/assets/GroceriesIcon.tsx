@@ -1,4 +1,4 @@
-export default function () {
+export default function GroceriesIcon() {
   return (
     <svg
       width="24"

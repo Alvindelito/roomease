@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import NavItem from './NavItem';
 import HomeIcon from '../../assets/HomeIcon';
 import ExpensesIcon from '../../assets/ExpensesIcon';
