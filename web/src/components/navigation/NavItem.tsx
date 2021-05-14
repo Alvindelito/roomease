@@ -16,7 +16,7 @@ const NavItem = ({ title, children }: NavType) => {
 };
 
 const NavItemStyles = styled.div`
-  width: 20%;
+  width: 4rem;
   padding: 1.25%;
   display: flex;
   flex-direction: column;
