@@ -13,6 +13,7 @@ import SignInPage from './pages/SignInPage';
 import RegisterSuccessPage from './pages/RegisterSuccessPage';
 import Protected from './pages/Protected';
 import { registerCall } from './helpers/registerCall';
+import NavBar from './components/navigation/NavBar';
 
 library.add(fas);
 
@@ -38,6 +39,7 @@ function App() {
           <PrivateRoute exact path="/protected">
             <Protected />
           </PrivateRoute>
+          <NavBar />
         </ThemeProvider>
       </Switch>
     </Router>
