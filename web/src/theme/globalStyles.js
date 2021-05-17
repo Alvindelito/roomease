@@ -9,7 +9,7 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({ theme }) => theme.body};
     color: ${({ theme }) => theme.text};
     font-family: 'Quicksand', 'Roboto', sans-serif;
-    margin: 0 8px;
+    margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
